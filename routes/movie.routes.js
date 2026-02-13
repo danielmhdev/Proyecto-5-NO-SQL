@@ -65,5 +65,57 @@ router.get('/year/:year', async (req, res) => {
 	}
 });
 
+//POST crear nueva película
+router.post('/', async (req, res, next) => {
+ try {
+      // Crearemos una instancia de movie con los datos enviados
+      const newMovie = new Movie({
+        title: req.body.title,
+        director: req.body.director,
+        year: req.body.year,
+        genre: req.body.genre
+      });
+  
+      // Guardamos la película en la DB
+      const createdMovie = await newMovie.save(); //La guardamos en la BD
+      return res.status(201).json(createdMovie);
+    } catch (error) {
+          // Lanzamos la función next con el error para que lo gestione Express
+      next(error);
+    }
+});
+
+ // PUT para modificar una película
+router.put('/:id', async (req, res, next) => { 
+    try {
+        const { id } = req.params; 
+        const movieUpdated = await Movie.findByIdAndUpdate(id, req.body, { new: true });
+        
+        if (movieUpdated) {
+            return res.status(200).json(movieUpdated);
+        } else {
+            return res.status(404).json('No se ha encontrado la película para actualizar');
+        }
+    } catch (error) {
+        return next(error);
+    }
+});
+
+//DELETE para borrar una película
+router.delete('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const movieDeleted = await Movie.findByIdAndDelete(id);
+
+        if (!movieDeleted) {
+            return res.status(404).json('No se ha encontrado la película para borrar');
+        }
+
+        return res.status(200).json('Se ha borrado la película correctamente!');
+    } catch (error) {
+        return next(error);
+    }
+});
+
 
 module.exports = router;
