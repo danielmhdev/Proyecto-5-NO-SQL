@@ -5,67 +5,67 @@ const Movie = require('../models/Movie');
 
 const router = express.Router();
 
-//GET movies
-router.get('/', async (req, res) => {
-	try {
-		const movies = await Movie.find();
-		return res.status(200).json(movies)
-	} catch (err) {
-		return res.status(500).json(err);
-	}
+// GET todas las películas
+router.get('/', async (req, res, next) => { 
+    try {
+        const movies = await Movie.find();
+        return res.status(200).json(movies);
+    } catch (error) {
+        return next(error); 
+    }
 });
 
-//GET id
-router.get('/id/:id', async (req, res) => {
-	const id = req.params.id;
-	try {
-		const movie = await Movie.findById(id);
-		if (movie) {
-			return res.status(200).json(movie);
-		} else {
-			return res.status(404).json('No movie found by this id');
-		}
-	} catch (err) {
-		return res.status(500).json(err);
-	}
-});
-//GET title
-router.get('/title/:title', async (req, res) => {
-	const {title} = req.params;
-
-	try {
-		const movieByTitle = await Movie.find({ title });
-		return res.status(200).json(movieByTitle);
-	} catch (err) {
-		return res.status(500).json(err);
-	}
+// GET id
+router.get('/id/:id', async (req, res, next) => {
+    const { id } = req.params; 
+    try {
+        const movie = await Movie.findById(id);
+        if (movie) {
+            return res.status(200).json(movie);
+        } else {
+            const err = new Error('No se encuentra película por esta id');
+            err.status = 404;
+            return next(err);
+        }
+    } catch (error) {
+        return next(error);
+    }
 });
 
-//GET genre
-router.get('/genre/:genre', async (req, res) => {
-	const {genre} = req.params;
+// GET title
+router.get('/title/:title', async (req, res, next) => {
+    const { title } = req.params;
+    try {
+        const moviesByTitle = await Movie.find({ title });
+        return res.status(200).json(moviesByTitle);
+    } catch (error) {
+        return next(error); 
+    }
+});
 
-	try {
-		const movieByGenre = await Movie.find({ genre });
-		return res.status(200).json(movieByGenre);
-	} catch (err) {
-		return res.status(500).json(err);
-	}
+// GET genre
+router.get('/genre/:genre', async (req, res, next) => {
+    const { genre } = req.params;
+    try {
+        const movieByGenre = await Movie.find({ genre });
+        return res.status(200).json(movieByGenre);
+    } catch (error) {
+        return next(error);
+    }
 });
 
 //GET year
-router.get('/year/:year', async (req, res) => {
-	const {year} = req.params;
-
-	try {
-		const movieByYear = await Movie.find({ year: {$gt:year} });
-		return res.status(200).json(movieByYear);
-	} catch (err) {
-		return res.status(500).json(err);
-	}
+router.get('/year/:year', async (req, res, next) => {
+    const { year } = req.params;
+    try {
+        const movieByYear = await Movie.find({ year: { $gt: year } });
+        return res.status(200).json(movieByYear);
+    } catch (error) {
+        return next(error);
+    }
 });
 
-//POST crear nueva película
+// POST crear nueva película
 router.post('/', async (req, res, next) => {
  try {
       // Crearemos una instancia de movie con los datos enviados
@@ -101,7 +101,7 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-//DELETE para borrar una película
+// DELETE para borrar una película
 router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;

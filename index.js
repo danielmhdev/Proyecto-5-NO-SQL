@@ -1,6 +1,7 @@
 const express = require('express');
 const {connect} = require('./utils/db')
 const movieRoutes = require('./routes/movie.routes');
+const cinemaRoutes = require('./routes/cinema.routes');
 
 connect();
 
@@ -10,10 +11,11 @@ const server = express();
 
 // Permite leer el cuerpo de las peticiones en formato JSON
 server.use(express.json()); 
+server.use(express.urlencoded({ extended: false }));
 
 //Rutas
 server.use('/movies', movieRoutes);
-server.use(express.urlencoded({ extended: false }));
+server.use('/cinemas', cinemaRoutes)
 
 //Manejador de rutas no especificadas
 server.use((req, res, next) => {
