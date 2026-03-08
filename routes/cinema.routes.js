@@ -4,7 +4,7 @@ const Cinema = require('../models/Cinema');
 
 const router = express.Router();
 
-// GET todos los cines
+// GET listar todos los cines
 router.get('/', async (req, res, next) => {
     try {
         const cinemas = await Cinema.find();
@@ -87,7 +87,7 @@ router.put('/:id', async (req, res, next) => {
         if (cinemaUpdated) {
             return res.status(200).json(cinemaUpdated);
         } else {
-            return res.status(404).json('No se ha encontrado cine para actualizar s');
+            return res.status(404).json('No se ha encontrado cine para actualizar');
         }
     } catch (error) {
         return next(error);
@@ -111,7 +111,6 @@ router.delete('/:id', async (req, res, next) => {
         return next(error);
     }
 });
-
 
 
 module.exports = router;
